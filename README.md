@@ -12,3 +12,6 @@ This is one of the Mirage's [pioneer projects](https://github.com/mirage/mirage-
   we need to test cohttp clients against bad servers.
   [hamms](https://github.com/kevinburke/hamms) is a program written in Python that
   provides runnable examples of scenarios with bad servers.
+
+## License
+WTFPL
