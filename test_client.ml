@@ -36,25 +36,38 @@ let get_query_uri qs port =
           add_qs new_uri xs
      in add_qs base_uri qs
 
-let test_port_basic port =
+let print_result rp body =
+  let s_rp = Cohttp_async.Response.sexp_of_t rp
+  and s_bd = Cohttp_async.Body.sexp_of_t body in
+  print_endline "\n=== Response ===\n";
+  print_endline (Sexp.to_string s_rp);
+  print_endline "\n=== Body ===\n";
+  print_endline (Sexp.to_string s_bd);
+  return ()
+
+  
+
+let test_port_basic port qn qv =
   Printf.sprintf "Connecting port: %d" port |> log;
-  let uri = get_query_uri None port in
+  let uri =
+    match qn, qv with
+    | Some n, Some v -> get_query_uri (Query (n, v)) port
+    | None, None -> get_query_uri None port
+    | _, _ -> failwith "Invalud arguments"
+  in
   Cohttp_async.Client.get uri >>= (fun (rp, body) ->
-    let s_bd = Cohttp_async.Response.sexp_of_t rp
-    and s_rp = Cohttp_async.Body.sexp_of_t body in
-    print_endline "\n=== Response===\n";
-    print_endline (Sexp.to_string s_rp);
-    print_endline "\n=== Body ===\n";
-    print_endline (Sexp.to_string s_bd);
-    return ()
+    print_result rp body
   )
 
 let () = 
   Command.async_basic 
     ~summary:"Cohttp test harness"
     Command.Spec.(
-      empty +> anon ("port" %: int)
+      empty 
+      +> flag "-p" (required int) ~doc:"specify port number"
+      +> flag "-qn" (optional string) ~doc:"query name"
+      +> flag "-qv" (optional string) ~doc:"query value"
     )
-    (fun port () -> test_port_basic port)
+    (fun port qn qv () -> test_port_basic port qn qv)
   |> Command.run
 

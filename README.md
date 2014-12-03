@@ -1,7 +1,7 @@
 ocaml-cohttp-test
 =================
 
-HTTP Performance and Profiling Harness for Mirage's OCaml-cohttp
+HTTP Performance and Profiling Harness for Mirage's OCaml-cohttp.
 This is one of the Mirage's [pioneer projects](https://github.com/mirage/mirage-www/wiki/Pioneer-Projects)
 
 ## Tests
@@ -12,7 +12,7 @@ As discussed in issue [#206](https://github.com/mirage/ocaml-cohttp/issues/206),
 need to test cohttp clients against bad servers. ["Hamms"](https://github.com/kevinburke/hamms)
 is a program written in Python that provides runnable examples of scenarios
 with bad servers. In the follwing test, cohttp clients will try to
-handle each bad server run by "hamms". Please refer to "hamms" [documentation]((https://github.com/kevinburke/hamms)
+handle each bad server run by "hamms". Please refer to "hamms" [documentation](https://github.com/kevinburke/hamms)
 for detailed description of the mode of each port.
 
 #### Test results
@@ -49,7 +49,7 @@ Client hangs up without receiving anything, which may be the expected result.
 - [x] port 5502:
 
 Async monitor raises exception, indicating that server closes connection.
-This should be expected behaviour.
+This should be the expected behaviour.
 
 ````OCaml
    [INFO] 2014-12-03 00:43:27.979641-08:00 : Connecting port: 5502
@@ -89,10 +89,44 @@ server closes connection. This may **not** be expected.
         (is_detached false) (kill_index 0))))))
    (Pid 90741))))
 ````
-- [ ] port 5504:
-- [ ] port 5505:
+
+- [x] port 5504:
+
+Async monitor raise exception, indicating response is malformed.
+This should be the expected result.
+
+````OCaml
+[INFO] 2014-12-03 09:57:16.105986-08:00 : Connecting port: 5504
+((pid 99225) (thread_id 0) (2014-12-03 09:57:16.125056-08:00)
+ "unhandled exception in Async scheduler"
+ ("unhandled exception"
+  ((lib/monitor.ml.Error_
+    ((exn (Failure "Malformed response version: foo"))
+     (backtrace
+      ("Raised at file \"async/cohttp_async.ml\", line 185, characters 32-46"
+       "Called from file \"lib/deferred.ml\", line 12, characters 64-67"
+       "Called from file \"lib/jobs.ml\", line 214, characters 10-13" ""))
+     (monitor
+      (((name main) (here ()) (id 1) (has_seen_error true)
+        (is_detached false) (kill_index 0))))))
+   (Pid 99225))))
+````
+
+- [x] port 5505:
+
+Same result as above
+
 - [ ] port 5506:
 - [ ] port 5507:
+- [x] port 5508:
+
+The following tests are sleeping 1 sec, 5 secs, and 10 secs , respectively. They all showed expected behaviour.
+````Bash
+$ ./test_client.native -p 5508 -qn sleep -qv 1
+$ ./test_client.native -p 5508 -qn sleep -qv 5
+$ ./test_client.native -p 5508 -qn sleep -qv 10
+````
+
 
 ## License
 WTFPL
