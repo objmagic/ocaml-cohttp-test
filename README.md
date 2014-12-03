@@ -21,7 +21,7 @@ for detailed description of the mode of each port.
 
 Async monitor raises exception, indicating "connection refused", which may be the right behavior.
 
-````OCaml````
+````OCaml
 [INFO] 2014-12-03 00:39:10.534164-08:00 : Connecting port: 5500
 ((pid 89027) (thread_id 0) (2014-12-03 00:39:10.538222-08:00)
  "unhandled exception in Async scheduler"
