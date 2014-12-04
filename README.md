@@ -49,7 +49,7 @@ Client hangs up without receiving anything, which may be the expected result.
 - [x] **port 5502**:
 
 Async monitor raises exception, indicating that server closes connection.
-This should be the expected behaviour.
+This may **not** be xpected behaviour.
 
 ````OCaml
    [INFO] 2014-12-03 00:43:27.979641-08:00 : Connecting port: 5502
@@ -92,7 +92,7 @@ server closes connection. This may **not** be expected.
 
 - [x] **port 5504**:
 
-Async monitor raise exception, indicating response is malformed.
+Async monitor raises exception, indicating response is malformed.
 This should be the expected result.
 
 ````OCaml
@@ -116,8 +116,14 @@ This should be the expected result.
 
 Same result as above
 
-- [ ] **port 5506**:
-- [ ] **port 5507**:
+- [x] **port 5506**:
+
+The client receives nothing. Maybe something goes wrong.
+
+- [x] **port 5507**:
+
+Same as above.
+
 - [x] **port 5508**:
 
 The following tests are sleeping 1 sec, 5 secs, and 10 secs, respectively. They all showed expected behaviour.
@@ -139,11 +145,12 @@ Tests show expected behaviour. However, note that adversary server can send an e
 
 - [x] **port 5510**:
 
-Client does not crach. Test passes. The following is the output.
+Client does not crash. However, client should receive data of size 1MB, rather than 3 indicated by ``Content-Length``. The following is
+the output.
 
 ````Bash
 $ ./test_client.native -p 5510
-[INFO] 2014-12-03 15:05:13.151247-08:00 : Connecting port: 5510
+[INFO] 2014-12-03 18:47:56.897867-08:00 : Connecting port: 5510
 
 === Response ===
 
@@ -151,12 +158,12 @@ $ ./test_client.native -p 5510
 
 === Body ===
 
-(Pipe((id 1)(buffer())(size_budget 0)(pushback(Full()))(num_values_read 0)(blocked_flushes())(blocked_reads())(closed Empty)(read_closed Empty)(consumers())(upstream_flusheds())))
+aaa
 ````
 
 - [x] **port 5511**:
 
-Tests include receiving cookie of various sizes. All tests passed.
+Tests include receiving cookie of various sizes, ranging from 0 to 99999. All tests passed.
 
 - [x] **port 5512**:
 
@@ -168,7 +175,7 @@ The test passes.
 
 - [x] **port 5513****:
 
-Try the following comand and client reacts as expected. Test passes.
+Try the following command and client reacts as expected. Test passes.
 
 ````Bash
 ./test_client.native -p 5513 -qn failrate -qv 0.1

@@ -1,7 +1,6 @@
 (* Simple cohttp client test harness *)
 open Core.Std
 open Async.Std
-open Cohttp_async
 
 (* localhost *)
 let lh = "http://localhost:";;
@@ -37,13 +36,11 @@ let get_query_uri qs port =
      in add_qs base_uri qs
 
 let print_result rp body =
-  let s_rp = Cohttp_async.Response.sexp_of_t rp
-  and s_bd = Cohttp_async.Body.sexp_of_t body in
+  let s_rp = Cohttp_async.Response.sexp_of_t rp in
   print_endline "\n=== Response ===\n";
   print_endline (Sexp.to_string s_rp);
   print_endline "\n=== Body ===\n";
-  print_endline (Sexp.to_string s_bd);
-  return ()
+  (Cohttp_async.Body.to_string body) >>= (fun s -> return (print_endline s))
 
 let get_5512_uri port tv =
   let uri = get_query_uri (Query ("key", "nano")) port in
