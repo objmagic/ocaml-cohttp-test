@@ -43,9 +43,8 @@ let print_result rp body =
   (Cohttp_async.Body.to_string body) >>= (fun s -> return (print_endline s))
 
 let get_5512_uri port tv =
-  let uri = get_query_uri (Query ("key", "nano")) port in
-  let uri = Uri.add_query_param uri ("tries", [tv]) in
-  print_endline (Uri.to_string uri);
+  let uri = get_query_uri ["key", "nano"; "tries", tv] port in
+  Printf.sprintf ("Using URI: "%s"\n" (Uri.to_string uri));
   uri
 
 let test_port_basic port qn qv =
