@@ -2,190 +2,185 @@ ocaml-cohttp-test
 =================
 
 HTTP Performance and Profiling Harness for Mirage's OCaml-cohttp.
-This is one of the Mirage's [pioneer projects](https://github.com/mirage/mirage-www/wiki/Pioneer-Projects)
+This is one of the Mirage's [pioneer
+projects](https://github.com/mirage/mirage-www/wiki/Pioneer-Projects)
 
 ## Tests
 
 ### Test clients against bad servers
 
 As discussed in issue [#206](https://github.com/mirage/ocaml-cohttp/issues/206), we
-need to test cohttp clients against bad servers. ["Hamms"](https://github.com/kevinburke/hamms)
+need to test cohttp clients against bad servers.
+["Hamms"](https://github.com/kevinburke/hamms)
 is a program written in Python that provides runnable examples of scenarios
 with bad servers. In the follwing test, cohttp clients will try to
-handle each bad server run by "hamms". Please refer to "hamms" [documentation](https://github.com/kevinburke/hamms)
+handle each bad server run by "hamms". Please refer to "hamms"
+[documentation](https://github.com/kevinburke/hamms)
 for detailed description of the mode of each port.
 
 #### Test results
 
 - [x] **port 5500**:
 
-Async monitor raises exception, indicating "connection refused", which may be the right behavior.
+** expected behaviour **: Program raises exception indicating "connection refused"
 
-````OCaml
-[INFO] 2014-12-03 00:39:10.534164-08:00 : Connecting port: 5500
-((pid 89027) (thread_id 0) (2014-12-03 00:39:10.538222-08:00)
- "unhandled exception in Async scheduler"
- ("unhandled exception"
-  ((lib/monitor.ml.Error_
-    ((exn (Unix.Unix_error "Connection refused" connect 127.0.0.1:5500))
-     (backtrace
-      ("Raised by primitive operation at file \"lib/unix_syscalls.ml\", line 851, characters 12-69"
-       "Called from file \"lib/deferred.ml\", line 12, characters 64-67"
-       "Called from file \"lib/jobs.ml\", line 214, characters 10-13" ""))
-     (monitor
-      (((name Tcp.close_sock_on_error) (here ()) (id 9) (has_seen_error true)
-        (is_detached true) (kill_index 0))))))
-   (Pid 89027))))
+````
+Uncaught exception:
+
+(Unix.Unix_error "Connection refused" connect "")
 ````
 
 - [x] **port 5501**:
 
-Client hangs up without receiving anything, which may be the expected result.
-
-````OCaml
-[INFO] 2014-12-03 00:41:33.289342-08:00 : Connecting port: 5501
-````
+** expected behaviour **: Client received nothing
 
 - [x] **port 5502**:
 
-Async monitor raises exception, indicating that server closes connection.
-This may **not** be xpected behaviour.
+** expected behaviour **: Program raises exception indicating
+"connection closed"
 
-````OCaml
-   [INFO] 2014-12-03 00:43:27.979641-08:00 : Connecting port: 5502
-((pid 89839) (thread_id 0) (2014-12-03 00:43:27.988592-08:00)
- "unhandled exception in Async scheduler"
- ("unhandled exception"
-  ((lib/monitor.ml.Error_
-    ((exn (Failure "Connection closed by remote host"))
-     (backtrace
-      ("Raised at file \"async/cohttp_async.ml\", line 184, characters 21-63"
-       "Called from file \"lib/deferred.ml\", line 12, characters 64-67"
-       "Called from file \"lib/jobs.ml\", line 214, characters 10-13" ""))
-     (monitor
-      (((name main) (here ()) (id 1) (has_seen_error true)
-        (is_detached false) (kill_index 0))))))
-   (Pid 89839))))
+````
+Uncaught exception:
+
+(Failure "Client connection was closed")
 ````
 
 - [x] **port 5503**:
 
-Async monitor raises exception, indicating that
-server closes connection. This may **not** be expected.
+** expected behaviour ** : Program raises exception indicating that
+server closes connection.
 
-````OCaml
-  [INFO] 2014-12-03 00:48:27.179752-08:00 : Connecting port: 5503
-((pid 90741) (thread_id 0) (2014-12-03 00:48:27.190862-08:00)
- "unhandled exception in Async scheduler"
- ("unhandled exception"
-  ((lib/monitor.ml.Error_
-    ((exn (Failure "Connection closed by remote host"))
-     (backtrace
-      ("Raised at file \"async/cohttp_async.ml\", line 184, characters 21-63"
-       "Called from file \"lib/deferred.ml\", line 12, characters 64-67"
-       "Called from file \"lib/jobs.ml\", line 214, characters 10-13" ""))
-     (monitor
-      (((name main) (here ()) (id 1) (has_seen_error true)
-        (is_detached false) (kill_index 0))))))
-   (Pid 90741))))
+````
+Uncaught exception:
+
+(Failure "Client connection was closed")
 ````
 
 - [x] **port 5504**:
 
-Async monitor raises exception, indicating response is malformed.
-This should be the expected result.
+** expected behaviour ** : Program raises exception
+indicating response is malformed.
 
-````OCaml
-[INFO] 2014-12-03 09:57:16.105986-08:00 : Connecting port: 5504
-((pid 99225) (thread_id 0) (2014-12-03 09:57:16.125056-08:00)
- "unhandled exception in Async scheduler"
- ("unhandled exception"
-  ((lib/monitor.ml.Error_
-    ((exn (Failure "Malformed response version: foo"))
-     (backtrace
-      ("Raised at file \"async/cohttp_async.ml\", line 185, characters 32-46"
-       "Called from file \"lib/deferred.ml\", line 12, characters 64-67"
-       "Called from file \"lib/jobs.ml\", line 214, characters 10-13" ""))
-     (monitor
-      (((name main) (here ()) (id 1) (has_seen_error true)
-        (is_detached false) (kill_index 0))))))
-   (Pid 99225))))
+````
+Uncaught exception:
+
+(Failure "Failed to read response: Malformed response version: foo")
 ````
 
 - [x] **port 5505**:
 
-Same result as above
+** expected behaviour ** : Program raises exception indicating response is malformed.
+
+````
+Uncaught exception:
+
+(Failure "Failed to read response: Malformed response version: foo")
+````
 
 - [x] **port 5506**:
 
-The client receives nothing. Maybe something goes wrong.
+** not sure ** : Nothing happened and client showed same behaviour as ``curl``
 
 - [x] **port 5507**:
 
-Same as above.
+** not sure ** : Nothing happened and client showed same behaviour as ``curl``
 
 - [x] **port 5508**:
 
-The following tests are sleeping 1 sec, 5 secs, and 10 secs, respectively. They all showed expected behaviour.
+** expected behaviour **
 
 ````Bash
-./test_client.native -p 5508 -qn sleep -qv 1
-./test_client.native -p 5508 -qn sleep -qv 5
-./test_client.native -p 5508 -qn sleep -qv 10
+$ ./lwt_client.native -p 5508 -qn sleep -qv 1
+$ ./lwt_client.native -p 5508 -qn sleep -qv 5
+$ ./lwt_client.native -p 5508 -qn sleep -qv 10
 ````
 
 - [x] **port 5509**:
 
-Tests show expected behaviour. However, note that adversary server can send an extremely large status code that crashes client because ``int_of_string`` fails
+** expected behaviour **
+
+_However_, note that adversary server can send an extremely large
+ status code that crashes client because ``int_of_string`` fails
 
 ````Bash
-./test_client.native -p 5509 -qn status -qv 200
-./test_client.native -p 5509 -qn status -qv 301
+$ ./lwt_client.native -p 5509 -qn status -qv 200
+$ ./lwt_client.native -p 5509 -qn status -qv 301
 ````
 
 - [x] **port 5510**:
 
-Client does not crash. However, client should receive data of size 1MB, rather than 3 indicated by ``Content-Length``. The following is
-the output.
+** Unexpected behaviour **: Client does not crash.
+However, client should receive data of size 1MB,
+rather than 3 indicated by ``Content-Length``.
+The following is the output.
 
 ````Bash
-$ ./test_client.native -p 5510
-[INFO] 2014-12-03 18:47:56.897867-08:00 : Connecting port: 5510
+$ ./lwt_client.native -p 5510
+[INFO] 2014-12-31 10:52:38.831440-08:00 : Connecting port: 5510
 
-=== Response ===
+----------------- Response -----------------
 
 ((encoding(Fixed 3))(headers((connection keep-alive)(content-length 3)(content-type text/plain)(server Hamms/1.3)))(version HTTP_1_1)(status OK)(flush false))
 
-=== Body ===
+----------------- Body -----------------
 
 aaa
 ````
 
 - [x] **port 5511**:
 
-Tests include receiving cookie of various sizes, ranging from 0 to 99999. All tests passed.
+** expected behaviour ** : Tests include receiving cookie of various sizes, ranging from 0 to 99999. All tests passed.
 
 - [x] **port 5512**:
 
-Try the following command three times and get OK at the third time.
+** expected behaviour ** : Try the following command three times and get OK at the third time.
 The test passes.
 ````Bash
-./test_client.native -p 5512 -qn tries -qv 3
+./lwt_client.native -p 5512 -qn key,tries -qv nano,3
 ````
 
-- [x] **port 5513****:
+- [x] **port 5513**:
 
-Try the following command and client reacts as expected. Test passes.
+** expected behaviour ** : Try the following command and client reacts as expected. Test passes.
 
 ````Bash
-./test_client.native -p 5513 -qn failrate -qv 0.1
+./lwt_client.native -p 5513 -qn failrate -qv 0.1
 ````
 
-- [ ] **port 5514**:
-- [ ] **port 5515**:
+- [x] **port 5514**:
+
+** expected behaviour **: Server will now return content with
+different type than that indicated in the request. Try the
+following the command and we observe client parses server's
+content according to the type indicated in server's header.
+All contents are parsed without error.
+
+
+````Bash
+./lwt_client.native -p 5514 -hn accept -hv text/morse
+./lwt_client.native -p 5514 -hn accept -hv application/json
+````
+- [x] **port 5515**:
+** Unexpected behaviour **: Client simply hangs up.
+
 - [ ] **port 5516**:
+** Expected behaviour **: Since server closes partway, client
+only receives partial data. For example:
 
+````Bash
+$ ./lwt_client.native -p 5516 -hn accept -hv application/json
+[INFO] : 2014-12-31 16:56:44.523581-08:00 : Connecting port: 5516
+[Uri] : http://localhost:5516
+[Header] : key: accept - value: application/json
 
+----------------- Response -----------------
+
+((encoding(Fixed 2085))(headers((content-length 2085)(content-type application/json)))(version HTTP_1_1)(status OK)(flush false))
+
+----------------- Body -----------------
+
+{"message": "the json body is incomplete.", "key": {"nested_message": "blah blah blah
+````
 
 ## License
 GPL V3
