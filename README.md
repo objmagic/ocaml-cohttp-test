@@ -161,9 +161,11 @@ All contents are parsed without error.
 ./lwt_client.native -p 5514 -hn accept -hv application/json
 ````
 - [x] **port 5515**:
+
 **Unexpected behaviour**: Client simply hangs up.
 
 - [ ] **port 5516**:
+
 **Expected behaviour**: Since server closes partway, client
 only receives partial data. For example:
 
