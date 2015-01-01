@@ -22,7 +22,7 @@ for detailed description of the mode of each port.
 
 - [x] **port 5500**:
 
-**expected behaviour**: Program raises exception indicating "connection refused"
+**Expected behaviour**: Program raises exception indicating "connection refused"
 
 ````
 Uncaught exception:
@@ -32,11 +32,11 @@ Uncaught exception:
 
 - [x] **port 5501**:
 
-**expected behaviour**: Client received nothing
+**Expected behaviour**: Client received nothing
 
 - [x] **port 5502**:
 
-**expected behaviour**: Program raises exception indicating
+**Expected behaviour**: Program raises exception indicating
 "connection closed"
 
 ````
@@ -47,7 +47,7 @@ Uncaught exception:
 
 - [x] **port 5503**:
 
-**expected behaviour** : Program raises exception indicating that
+**Expected behaviour** : Program raises exception indicating that
 server closes connection.
 
 ````
@@ -58,7 +58,7 @@ Uncaught exception:
 
 - [x] **port 5504**:
 
-**expected behaviour** : Program raises exception
+**Expected behaviour** : Program raises exception
 indicating response is malformed.
 
 ````
@@ -69,7 +69,7 @@ Uncaught exception:
 
 - [x] **port 5505**:
 
-**expected behaviour** : Program raises exception indicating response is malformed.
+**Expected behaviour** : Program raises exception indicating response is malformed.
 
 ````
 Uncaught exception:
@@ -79,15 +79,15 @@ Uncaught exception:
 
 - [x] **port 5506**:
 
-**not sure** : Nothing happened and client showed same behaviour as ``curl``
+**Not sure** : Nothing happened and client showed same behaviour as ``curl``
 
 - [x] **port 5507**:
 
-**not sure** : Nothing happened and client showed same behaviour as ``curl``
+**Not sure** : Nothing happened and client showed same behaviour as ``curl``
 
 - [x] **port 5508**:
 
-**expected behaviour**
+**Expected behaviour**
 
 ````Bash
 $ ./lwt_client.native -p 5508 -qn sleep -qv 1
@@ -97,7 +97,7 @@ $ ./lwt_client.native -p 5508 -qn sleep -qv 10
 
 - [x] **port 5509**:
 
-**expected behaviour**
+**Expected behaviour**
 
 _However_, note that adversary server can send an extremely large
  status code that crashes client because ``int_of_string`` fails
@@ -129,11 +129,11 @@ aaa
 
 - [x] **port 5511**:
 
-**expected behaviour** : Tests include receiving cookie of various sizes, ranging from 0 to 99999. All tests passed.
+**Expected behaviour** : Tests include receiving cookie of various sizes, ranging from 0 to 99999. All tests passed.
 
 - [x] **port 5512**:
 
-**expected behaviour** : Try the following command three times and get OK at the third time.
+**Expected behaviour** : Try the following command three times and get OK at the third time.
 The test passes.
 ````Bash
 ./lwt_client.native -p 5512 -qn key,tries -qv nano,3
@@ -141,7 +141,7 @@ The test passes.
 
 - [x] **port 5513**:
 
-**expected behaviour** : Try the following command and client reacts as expected. Test passes.
+**Expected behaviour** : Try the following command and client reacts as expected. Test passes.
 
 ````Bash
 ./lwt_client.native -p 5513 -qn failrate -qv 0.1
@@ -149,7 +149,7 @@ The test passes.
 
 - [x] **port 5514**:
 
-**expected behaviour**: Server will now return content with
+**Expected behaviour**: Server will now return content with
 different type than that indicated in the request. Try the
 following the command and we observe client parses server's
 content according to the type indicated in server's header.
