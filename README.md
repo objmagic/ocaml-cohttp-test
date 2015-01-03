@@ -109,10 +109,9 @@ $ ./lwt_client.native -p 5509 -qn status -qv 301
 
 - [x] **port 5510**:
 
-**Unexpected behaviour**: Client does not crash.
-However, client should receive data of size 1MB,
-rather than 3 indicated by ``Content-Length``.
-The following is the output.
+**Expected behaviour**. However, we may want to further
+test what will happen if client pipelines multiple http
+requests in one TCP connection
 
 ````Bash
 $ ./lwt_client.native -p 5510
@@ -162,9 +161,10 @@ All contents are parsed without error.
 ````
 - [x] **port 5515**:
 
-**Unexpected behaviour**: Client simply hangs up.
+**Not sure**: Client simply suspended. ``curl`` showed the same
+behaviour
 
-- [ ] **port 5516**:
+- [x] **port 5516**:
 
 **Expected behaviour**: Since server closes partway, client
 only receives partial data. For example:
